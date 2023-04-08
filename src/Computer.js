@@ -177,7 +177,7 @@ class Game extends React.Component { //Main game component
                   board[move] = null;
                   break;
               }
-          } else { //The AI's turn - maximize the win
+          } else { //The computer turn - maximize the win
               best = Math.max(best, r);
               a = Math.max(a, best);
               if (b <= a) {
@@ -188,9 +188,9 @@ class Game extends React.Component { //Main game component
         }
         return best;
     } else { //Base case
-      if (score == "X") { //User won - worst outcome
+      if (score == "X") { //User won 
         return -1;
-      } else if (score == "O") { //AI won - return positive tScore
+      } else if (score == "O") { //computer won
         return 1;
       } else if (score == "") { //Tie
         return 0;
@@ -237,9 +237,9 @@ class Game extends React.Component { //Main game component
 
   setSquare(i) { //Set the square at i to the current player
     if (this.state.running !== false) {
-      const boards = this.state.frames.slice(0, this.state.index+1); //Get a copy of the array (up to index+1 so that can alter history)
+      const boards = this.state.frames.slice(0, this.state.index+1); 
       const squares = boards[this.state.index].squares.slice();
-      if (squares[i] == null) { //Prevent altering already set squares
+      if (squares[i] == null) { 
         squares[i] = this.state.current;
         boards.push({ squares: squares, move: i });
         this.setState({ frames: boards, index: this.state.index+1 }, () => {
@@ -249,7 +249,7 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  gameOverCheck(board, actual) { //Determines if the game is over and changes the state (actual is true if changing the state and returning boolean, false for returning winner)
+  gameOverCheck(board, actual) { 
     let sq = board;
 
     for (var i=0; i<8; i+=3) { //Horizontal
@@ -308,7 +308,7 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  render() { //Main render function
+  render() { 
     let msg = "";
     if (this.state.running === false && this.state.game_won === true) {
       if (this.state.current !== "") {
