@@ -28,7 +28,7 @@ class Board extends React.Component {
 
   renderRows() { //Render the rows of data
     return this.props.squares
-      .filter((v, i) => { return i%this.props.size === 0; }) //Filter so only rows left
+      .filter((v, i) => { return i%this.props.size === 0; }) 
       .map((v, i) => { //map each row
         return (
           <tr key={i}>

@@ -115,16 +115,14 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  setPlayer(player) { //Set player to show in message
+  setPlayer(player) { 
     const temp = this.state.history;
     temp[this.state.stat_index].current = player;
     temp[this.state.stat_index].msg = "Next player: " + player;
     this.setState({ history: temp });
   }
 
-  gameOver(sq) { //Returns boolean, true if winner
-    //Need to check for three consecutive non-null values
-    //Horizontal
+  gameOver(sq) {
     for (var i=0; i<8; i+=3) {
       if (sq[i] != null && sq[i] == sq[i+1] && sq[i] == sq[i+2]) {
         return true;

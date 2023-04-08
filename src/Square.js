@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Square extends React.Component { //Each square on the board
+class Square extends React.Component { 
   render() {
     let className = "square";
     if (this.props.disabled) {

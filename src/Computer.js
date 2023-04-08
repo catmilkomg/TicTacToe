@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component { //Each square on the board
+class Square extends React.Component { 
   render() {
     let className = "btn2";
     if (this.props.disabled) {
@@ -79,7 +79,7 @@ class Board extends React.Component {
   }
 }
 
-class Game extends React.Component { //Main game component
+class Game extends React.Component { 
   constructor(props) {
     super(props);
     this.state = {
@@ -95,17 +95,17 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  renderResetButton() { //Return the rendered reset button
+  renderResetButton() { 
     return <ResetButton onClick={() => { this.resetGame() }} />;
   }
 
-  renderBoard(frame) { //Return a rendered board
+  renderBoard(frame) { 
     return (
       <Board squares={frame} disable={false} onClick={(i) => { this.clickHandler(i); }} />
     );
   }
 
-  renderHistory() { //Render the history board frames into a list of buttons
+  renderHistory() { 
     console.log("History render!");
     let filtered = this.state.frames.filter((_,i) => { console.log(i>0); return (i > 0) });
     console.log(filtered);
@@ -121,7 +121,7 @@ class Game extends React.Component { //Main game component
       }));
   }
 
-  resetGame() { //Reset the game state to default, clearing all history
+  resetGame() { 
     this.setState({
       frames: [
         { squares: Array(9).fill(null) }
@@ -133,7 +133,7 @@ class Game extends React.Component { //Main game component
     });
   }
 
-  changeFrame(index) { //Change the current frame to go back in time
+  changeFrame(index) { 
     this.setState({ index: index, current: index%2===0 ? "X" : "O" });
     if (index < this.state.frames.length-1) { //If we're not at the end yet, allow changes
       this.setState({ running: false, game_won: false });
@@ -143,14 +143,14 @@ class Game extends React.Component { //Main game component
   }
 
   getMove() {
-    let board = this.state.frames[this.state.index].squares.slice(); //Get a copy of the squares array
+    let board = this.state.frames[this.state.index].squares.slice(); 
     let slots = this.getAvailableSquares(this.state.frames[this.state.index].squares);
-    let choice = -1; //Final choice (index in array)
-    let best = -1000; //Arbitrary value for best move
-    for (let move of slots) { //Iterate through the choices
+    let choice = -1; 
+    let best = -1000; 
+    for (let move of slots) { 
       board[move] = "O";
       let v = this.minimax(board, true, -1000, 1000);
-      if (v > best) { //If it's better, change the best
+      if (v > best) { 
         best = v;
         choice = move;
       }
@@ -160,24 +160,24 @@ class Game extends React.Component { //Main game component
   }
 
   minimax(board, turn, alpha, beta) {
-    let score = this.gameOverCheck(board, false); //Get the score
-    if ((!this.isFull(board)) && (score === null)) { //Board not complete - recursive case
+    let score = this.gameOverCheck(board, false); 
+    if ((!this.isFull(board)) && (score === null)) { 
       let best = (turn ? 1000 : -1000);
       let a = alpha;
       let b = beta;
       let slots = this.getAvailableSquares(board);
-      for (let move of slots) { //Iterate over set of possible choices
+      for (let move of slots) { 
           board[move] = turn ? "X" : "O";
           let r = this.minimax(board, !turn, a, b);
           board[move] = null;
-          if (turn) { //The user's turn - minimize the loss
+          if (turn) { 
               best = Math.min(best, r);
               b = Math.min(b, best);
               if (b <= a) {
                   board[move] = null;
                   break;
               }
-          } else { //The computer turn - maximize the win
+          } else {
               best = Math.max(best, r);
               a = Math.max(a, best);
               if (b <= a) {
@@ -187,7 +187,7 @@ class Game extends React.Component { //Main game component
           }
         }
         return best;
-    } else { //Base case
+    } else {
       if (score == "X") { //User won 
         return -1;
       } else if (score == "O") { //computer won
@@ -198,7 +198,7 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  getAvailableSquares(board) { //Return the available squares
+  getAvailableSquares(board) { 
     let res = [];
     let squares = board;
     for (let i=0; i<squares.length; i++) {
@@ -213,7 +213,7 @@ class Game extends React.Component { //Main game component
     return this.getAvailableSquares(board).length === 0;
   }
 
-  clickHandler(i) { //Handle clicks on the board squares and update game state
+  clickHandler(i) { 
     if (this.state.running && this.state.frames[this.state.index].squares[i] == null) { //Only allow clicks if running and the square isn't set
       this.setSquare(i);
       window.setTimeout(() => { //Delay so as the state is updated
@@ -235,7 +235,7 @@ class Game extends React.Component { //Main game component
     }
   }
 
-  setSquare(i) { //Set the square at i to the current player
+  setSquare(i) { 
     if (this.state.running !== false) {
       const boards = this.state.frames.slice(0, this.state.index+1); 
       const squares = boards[this.state.index].squares.slice();

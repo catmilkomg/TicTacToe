@@ -7,31 +7,31 @@ import Board from './Board';
 import './index.css';
 import { faSmile } from '@fortawesome/free-regular-svg-icons';
 
-//TODO: cleanup toggle, add styling to page, prevent automatic winner selection
 
-class Game extends React.Component { //Main game component
+
+class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             difficulty:"easy",
             frames: [
                 {
-                    squares: Array(9).fill(null), //Default array of size 9
-                    changed: -1, //Square index that was changed
+                    squares: Array(9).fill(null), 
+                    changed: -1, 
                 }
             ],
             index: 0,
-            size: 3, //The size of the board
+            size: 3, 
             current: "X",
             running: true,
-            twoplayer: true //Whether the game is two player or player-AI
+            twoplayer: true 
         }
     }
     handleDifficultyChange = (event) => {
         this.setState({ difficulty: event.target.value });
       }
 
-    renderResetButton() { //Return the rendered reset button
+    renderResetButton() { 
         return <ResetButton onClick={() => { this.resetGame(this.state.size) }} />;
     }
 
@@ -60,31 +60,31 @@ class Game extends React.Component { //Main game component
             }));
     }
 
-    toggleAI() { //Toggle AI/two player mode\
+    toggleAI() { 
         if (this.state.twoplayer) {
-            if (this.state.current === "O") { //AI's move - trigger click with null value
+            if (this.state.current === "O") { 
                 this.aiMove();
             }
         }
         this.setState({ twoplayer: !this.state.twoplayer });
     }
 
-    resetGame(size) { //Reset the game state to default, clearing all history, and set the board size
+    resetGame(size) { 
         this.setState({
             frames: [
                 { squares: Array(size * size).fill(null) }
             ],
             current: "X",
-            index: 0, //Current index in the frames
+            index: 0, 
             size: size,
             running: true, //Allows moves
-            game_won: false //Determines whether to show game over features
+            game_won: false 
         });
     }
 
-    changeFrame(index) { //Change the current frame to go back in time
+    changeFrame(index) {
         this.setState({ index: index, current: index % 2 === 0 ? "X" : "O" });
-        if (index < this.state.frames.length - 1) { //If we're not at the end yet, allow changes
+        if (index < this.state.frames.length - 1) {
             this.setState({ running: false, game_won: false });
         } else {
             this.setState({ running: false, game_won: true });
@@ -94,14 +94,14 @@ class Game extends React.Component { //Main game component
 
 
     getMove() {
-        let board = this.state.frames[this.state.index].squares.slice(); //Get a copy of the squares array
+        let board = this.state.frames[this.state.index].squares.slice(); 
         let slots = this.getAvailableSquares(this.state.frames[this.state.index].squares);
-        let choice = -1; //Final choice (index in array)
+        let choice = -1; 
         let best = -1000; //Arbitrary value for best move
-        for (let move of slots) { //Iterate through the choices
+        for (let move of slots) { 
             board[move] = "O";
             let v = this.minimax(board, true, -1000, 1000);
-            if (v > best) { //If it's better, change the best
+            if (v > best) { 
                 best = v;
                 choice = move;
             }
@@ -112,23 +112,23 @@ class Game extends React.Component { //Main game component
 
     minimax(board, turn, alpha, beta) {
         let score = this.gameOverCheck(board, false); //Get the score
-        if ((!this.isFull(board)) && (score === null)) { //Board not complete - recursive case
+        if ((!this.isFull(board)) && (score === null)) { 
             let best = (turn ? 1000 : -1000);
             let a = alpha;
             let b = beta;
             let slots = this.getAvailableSquares(board);
-            for (let move of slots) { //Iterate over set of possible choices
+            for (let move of slots) { 
                 board[move] = turn ? "X" : "O";
                 let r = this.minimax(board, !turn, a, b);
                 board[move] = null;
-                if (turn) { //The user's turn - minimize the loss
+                if (turn) { 
                     best = Math.min(best, r);
                     b = Math.min(b, best);
                     if (b <= a) {
                         board[move] = null;
                         break;
                     }
-                } else { //The AI's turn - maximize the win
+                } else { 
                     best = Math.max(best, r);
                     a = Math.max(a, best);
                     if (b <= a) {
@@ -138,18 +138,18 @@ class Game extends React.Component { //Main game component
                 }
             }
             return best;
-        } else { //Base case
-            if (score === "X") { //User won - worst outcome
+        } else {
+            if (score === "X") {
                 return -1;
-            } else if (score === "O") { //AI won - return positive tScore
+            } else if (score === "O") {
                 return 1;
-            } else if (score === "") { //Tie
+            } else if (score === "") {
                 return 0;
             }
         }
     }
 
-    getAvailableSquares(board) { //Return the available squares
+    getAvailableSquares(board) {
         let res = [];
         let squares = board;
         for (let i = 0; i < squares.length; i++) {
@@ -164,21 +164,21 @@ class Game extends React.Component { //Main game component
         return this.getAvailableSquares(board).length === 0;
     }
 
-    clickHandler(i) { //Handle clicks on the board squares and update game state
-        if (this.state.frames[this.state.index].squares[i] == null) { //Only allow clicks if running 
+    clickHandler(i) { 
+        if (this.state.frames[this.state.index].squares[i] == null) {  
             if (this.state.twoplayer) { //Two player mode
                 this.setSquare(i);
-                this.setState({ current: (this.state.current === "X") ? "O" : "X" }); //Prevent other player from making a move
-            } else { //AI mode
+                this.setState({ current: (this.state.current === "X") ? "O" : "X" }); 
+            } else { //computer mode
                 this.setSquare(i);
                 this.aiMove();
             }
         }
     }
 
-    async setSquare(i) { //Set the square at i to the current player
+    async setSquare(i) { 
         if (this.state.running !== false) {
-            const boards = this.state.frames.slice(0, this.state.index + 1); //Get a copy of the array (up to index+1 so that can alter history)
+            const boards = this.state.frames.slice(0, this.state.index + 1); 
             const squares = boards[this.state.index].squares.slice();
             if (squares[i] == null) { //Prevent altering already set squares
                 squares[i] = this.state.current;
@@ -191,9 +191,9 @@ class Game extends React.Component { //Main game component
     }
 
     aiMove() {
-        if (this.state.running) { //Only run if the game isn't over
-            this.setState({ current: "O", running: undefined }); //Prevent other player from making a move
-            window.setTimeout(() => { //Delay to give a sense of thinking
+        if (this.state.running) { 
+            this.setState({ current: "O", running: undefined });
+            window.setTimeout(() => { 
                 if (this.state.running !== false) {
                     let move = this.getMove();
                     this.setSquare(move);
@@ -205,7 +205,7 @@ class Game extends React.Component { //Main game component
         }
     }
 
-    gameOverCheck(board, actual) { //Determines if the game is over and changes the state (actual is true if changing the state and returning boolean, false for returning winner)
+    gameOverCheck(board, actual) { 
         let sq = board;
 
         for (let i = 0; i < this.state.size * this.state.size - 1; i += this.state.size) { //Horizontal - rows
@@ -309,7 +309,7 @@ class Game extends React.Component { //Main game component
         }
     }
 
-    render() { //Main render function
+    render() { 
         let msg = "";
         if (this.state.running === false && this.state.game_won === true) {
             if (this.state.current !== "") {
