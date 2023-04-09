@@ -17,7 +17,7 @@ class ResetButton extends React.Component {
   render() {
     return (
       <button className="reset-btn" onClick={() => { this.props.onClick() }}>
-        Reset game
+    Play Again
       </button>
     );
   }
