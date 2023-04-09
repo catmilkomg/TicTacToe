@@ -1,28 +1,31 @@
 .play {
-    display: block;
-    font-family: fantasy;
-    font-size: 80px;
-    color: yellow;
-    text-decoration: none;
-    text-align: center;
-    text-shadow: 0 0 10px #d7f847, 0 0 20px #000,  0 0 40px #d7f847;
-    background: none;
+  display: block;
+  font-family: fantasy;
+  font-size: 80px;
+  color: yellow;
+  text-decoration: none;
+
+  text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
+  background: none;
   border: none;
-  }
-  
-  h1 {
-    text-align: center; 
-    font-size: 5rem; 
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de; /* Adds the neon effect to the text */
-    font-family: fantasy;
-  }
-  body {
-    background-image: url('BACK.gif');
-    background-size: cover;
-    background-repeat: no-repeat;
-  
-    display: flex;
-    justify-content: center;
-    align-items: center;
-   
-  }
+  margin-left: 15%;
+}
+
+h1 {
+  text-align: center;
+  font-size: 5rem;
+  text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de;
+  /* Adds the neon effect to the text */
+  font-family: fantasy;
+}
+
+body {
+  background-image: url('BACK.gif');
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

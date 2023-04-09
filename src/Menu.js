@@ -18,7 +18,7 @@ function Menu() {
                 <h1 className="text-center">TIC-TAC-TOE</h1>
 
                 <div className="container">
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ Align: 'center' }}>
                         <button className="play"  onClick={goToGame}> <FontAwesomeIcon icon={faPlay} /> Play</button>
                         
                     </div>
