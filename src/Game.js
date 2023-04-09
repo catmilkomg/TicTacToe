@@ -27,12 +27,15 @@ class Game extends React.Component {
             running: true,
             twoplayer: false,
             difficultyLevel: "easy",
-            size: 3,
+            size: 3
+
+
         };
+        this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
     }
-    
-    
-   
+
+
+
 
     renderResetButton() {
         return <ResetButton onClick={() => { this.resetGame(this.state.size) }} />;
@@ -45,7 +48,7 @@ class Game extends React.Component {
         );
     }
 
-   
+
 
     toggleAI() {
         if (this.state.twoplayer) {
@@ -78,63 +81,92 @@ class Game extends React.Component {
         }
     }
 
-
+    handleDifficultyChange(event) {
+        console.log(event.target.value); // add this line to check the value of event.target.value
+        this.setState({ difficulty: event.target.value });
+    }
 
     getMove() {
-        let board = this.state.frames[this.state.index].squares.slice();
+        console.log(this.state.difficulty);
+        let board = this.state.frames[this.state.index].squares.slice(); // make a copy of the current board state
         let slots = this.getAvailableSquares(this.state.frames[this.state.index].squares);
         let choice = -1;
-        let best = -1000; //Arbitrary value for best move
+        let bestScore = -Infinity;
+        let isMaximizingPlayer = true; // the AI player is the maximizing player
+        let depth = 3; // set a default depth limit for 'easy'
+
+        
+        if (this.state.difficulty === 'medium') {
+            depth = 4;
+        
+        } else if (this.state.difficulty === 'hard') {
+            depth = 5;
+           
+        }
+
         for (let move of slots) {
-            board[move] = "O";
-            let v = this.minimax(board, true, -1000, 1000);
-            if (v > best) {
-                best = v;
+            board[move] = "O"; // simulate making the move
+            let score = this.minimax(board, !isMaximizingPlayer, -Infinity, Infinity, depth); // get the score for the move
+            board[move] = null; // undo the move
+
+            if (score > bestScore) { // update the best move if the score is higher
+                bestScore = score;
                 choice = move;
             }
-            board[move] = null;
         }
         return choice;
     }
 
-    minimax(board, turn, alpha, beta) {
-        let score = this.gameOverCheck(board, false); //Get the score
-        if ((!this.isFull(board)) && (score === null)) {
-            let best = (turn ? 1000 : -1000);
-            let a = alpha;
-            let b = beta;
-            let slots = this.getAvailableSquares(board);
-            for (let move of slots) {
-                board[move] = turn ? "X" : "O";
-                let r = this.minimax(board, !turn, a, b);
-                board[move] = null;
-                if (turn) {
-                    best = Math.min(best, r);
-                    b = Math.min(b, best);
-                    if (b <= a) {
-                        board[move] = null;
-                        break;
-                    }
-                } else {
-                    best = Math.max(best, r);
-                    a = Math.max(a, best);
-                    if (b <= a) {
-                        board[move] = null;
-                        break;
+
+    minimax(squares, depth, isMaximizingPlayer) {
+        const winner = this.gameOverCheck(squares);
+        if (winner === "X") {
+            return { score: -1 };
+        } else if (winner === "O") {
+            return { score: 1 };
+        } else if (squares.filter(s => s === null).length === 0) {
+            return { score: 0 };
+        }
+    
+        if (depth === 0) {
+            return { score: 0 };
+        }
+    
+        if (isMaximizingPlayer) {
+            let bestScore = -Infinity;
+            let bestMove = null;
+            for (let i = 0; i < squares.length; i++) {
+                if (squares[i] === null) {
+                    squares[i] = "O";
+                    const score = this.minimax(squares, depth - 1, false).score;
+                    squares[i] = null;
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = i;
                     }
                 }
             }
-            return best;
+            return { score: bestScore, index: bestMove };
         } else {
-            if (score === "X") {
-                return -1;
-            } else if (score === "O") {
-                return 1;
-            } else if (score === "") {
-                return 0;
+            let bestScore = Infinity;
+            let bestMove = null;
+            for (let i = 0; i < squares.length; i++) {
+                if (squares[i] === null) {
+                    squares[i] = "X";
+                    const score = this.minimax(squares, depth - 1, true).score;
+                    squares[i] = null;
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestMove = i;
+                    }
+                }
             }
+            return { score: bestScore, index: bestMove };
         }
     }
+    
+
+
 
     getAvailableSquares(board) {
         let res = [];
@@ -163,11 +195,7 @@ class Game extends React.Component {
         }
     }
 
-    handleDifficultyChange(event) {
-        this.setState({
-            difficultyLevel: event.target.value
-        });
-    }
+
     async setSquare(i) {
         if (this.state.running !== false) {
             const boards = this.state.frames.slice(0, this.state.index + 1);
@@ -181,15 +209,19 @@ class Game extends React.Component {
             }
         }
     }
- 
-      
-
     aiMove() {
         if (this.state.running) {
             this.setState({ current: "O", running: undefined });
             window.setTimeout(() => {
                 if (this.state.running !== false) {
-                    let move = this.getMove();
+                    let move;
+                    if (this.state.difficulty === "easy") {
+                        move = this.getEasyMove();
+                    } else if (this.state.difficulty === "medium") {
+                        move = this.getMediumMove();
+                    } else {
+                        move = this.getHardMove();
+                    }
                     this.setSquare(move);
                     if (!this.gameOverCheck(this.state.frames[this.state.index].squares, true)) {
                         this.setState({ running: true, current: "X" });
@@ -198,6 +230,31 @@ class Game extends React.Component {
             }, 350);
         }
     }
+
+    getEasyMove() {
+        // Return a random move
+        const emptySquares = this.getAvailableSquares();
+        return emptySquares[Math.floor(Math.random() * emptySquares.length)];
+    }
+
+    getMediumMove() {
+        // Return a random move or a winning move if available
+        const emptySquares = this.getAvailableSquares();
+        const winningMove = this.getWinningMove();
+        if (winningMove !== null) {
+            return winningMove;
+        } else {
+            return emptySquares[Math.floor(Math.random() * emptySquares.length)];
+        }
+    }
+
+    getHardMove() {
+        // Return the best move based on minimax algorithm
+        return this.minimax(this.state.frames[this.state.index].squares, true).index;
+    }
+
+
+
 
     gameOverCheck(board, actual) {
         let sq = board;
@@ -302,14 +359,16 @@ class Game extends React.Component {
             return null;
         }
     }
-    
+
+
 
     render() {
+        console.log(this.props.difficulty);
         function goToMenu() {
             const gameComponent = <Menu />;
             ReactDOM.render(gameComponent, document.getElementById("root"));
         }
-    
+
         let msg = "";
         if (this.state.running === false && this.state.game_won === true) {
             if (this.state.current !== "") {
@@ -339,12 +398,12 @@ class Game extends React.Component {
                 </div>
             );
         }
-    
+
         return (
             <div className="row mt-5">
                 <div className="col-md-9">
                     <h1 className="text-center">TIC-TAC-TOE</h1>
-    
+
                     <div className="container">
                         <div className="row">
                             <div className="col-md-3">
@@ -354,7 +413,7 @@ class Game extends React.Component {
                                         this.state.frames[this.state.index].squares
                                     )}
                                 </div>
-    
+
                                 <div className="pt-4 row text-center">
                                     <h3 className="text-center">
                                         <input
@@ -367,14 +426,14 @@ class Game extends React.Component {
                                             htmlFor="toggle-ai"
                                             className="toggle-label"
                                         >
-                                            Play Alone
-                                            
+                                            Play With Friends
+
                                         </label>
                                     </h3>
                                 </div>
-    
-                                {/* Difficulty level selector */}
-                              
+
+
+
                             </div>
                         </div>
                         <div className="col-md-3">
@@ -391,30 +450,22 @@ class Game extends React.Component {
                                             Main Menu
                                         </button>
                                     </li>
-                                <li>
-                                {this.state.twoplayer === false && (
-                                    
-                                        <h2 className="text-center">
-                                          <h3> Difficulty Level:</h3>  {" "}   
-                                            <select
-                                                value={this.state.difficulty}
-                                                onChange={(event) =>
-                                                    this.setState({
-                                                        difficulty:
-                                                            event.target.value,
-                                                    })
-                                                }
-                                            >
-                                                <option value="easy">Easy</option>
-                                                <option value="medium">
-                                                    Medium
-                                                </option>
-                                                <option value="hard">Hard</option>
-                                            </select>
-                                    
+                                    <li>
+                                        {this.state.twoplayer === false && (
+
+                                            <h2 className="text-center">
+                                                <h3> Difficulty Level:</h3>  {" "}
+                                                <select value={this.state.difficulty} onChange={this.handleDifficultyChange}>
+                                                    <option value="easy">Easy</option>
+                                                    <option value="medium">
+                                                        Medium
+                                                    </option>
+                                                    <option value="hard">Hard</option>
+                                                </select>
+
                                             </h2>
-                                )}
-                                </li>
+                                        )}
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -423,7 +474,7 @@ class Game extends React.Component {
             </div>
         );
     }
-    
+
 }
 
 export default Game
