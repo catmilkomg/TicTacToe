@@ -1,6 +1,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { calculateComputerMoveEasy, calculateComputerMoveMedium, calculateComputerMoveHard } from './calculateDifficulty';
+
 import ResetButton from './ResetButton';
 import Board from './Board';
 import ReactDOM from "react-dom";
@@ -14,20 +16,22 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-           
             frames: [
                 {
                     squares: Array(9).fill(null),
                     changed: -1,
                 }
             ],
-            index: 0,
-            size: 3,
             current: "X",
+            index: 0,
             running: true,
-            twoplayer: true
-        }
+            twoplayer: false,
+            difficultyLevel: "easy",
+            size: 3,
+        };
     }
+    
+    
    
 
     renderResetButton() {
@@ -159,6 +163,11 @@ class Game extends React.Component {
         }
     }
 
+    handleDifficultyChange(event) {
+        this.setState({
+            difficultyLevel: event.target.value
+        });
+    }
     async setSquare(i) {
         if (this.state.running !== false) {
             const boards = this.state.frames.slice(0, this.state.index + 1);
@@ -172,6 +181,8 @@ class Game extends React.Component {
             }
         }
     }
+ 
+      
 
     aiMove() {
         if (this.state.running) {
@@ -297,79 +308,122 @@ class Game extends React.Component {
         function goToMenu() {
             const gameComponent = <Menu />;
             ReactDOM.render(gameComponent, document.getElementById("root"));
-          }
+        }
+    
         let msg = "";
         if (this.state.running === false && this.state.game_won === true) {
             if (this.state.current !== "") {
-                msg = <div className="game-tied-container">
-                    <h2 className="game-tied-message">
-
-                        Winner is: {this.state.current}
-                        <FontAwesomeIcon icon={faFaceGrinBeam} />
-                    </h2>
-                </div>;
+                msg = (
+                    <div className="game-tied-container">
+                        <h2 className="game-tied-message">
+                            Winner is: {this.state.current}
+                            <FontAwesomeIcon icon={faFaceGrinBeam} />
+                        </h2>
+                    </div>
+                );
             } else {
-                msg = <div className="game-tied-container">
-                    <h2 className="game-tied-message">Game tied! <FontAwesomeIcon icon={faSmile} /></h2>
-                </div>;
+                msg = (
+                    <div className="game-tied-container">
+                        <h2 className="game-tied-message">
+                            Game tied! <FontAwesomeIcon icon={faSmile} />
+                        </h2>
+                    </div>
+                );
             }
         } else {
-            msg = <div className="game-tied-container">
-                <h2 className="game-tied-message">Next player: {this.state.current}</h2>
-            </div>;
+            msg = (
+                <div className="game-tied-container">
+                    <h2 className="game-tied-message">
+                        Next player: {this.state.current}
+                    </h2>
+                </div>
+            );
         }
-
+    
         return (
             <div className="row mt-5">
                 <div className="col-md-9">
                     <h1 className="text-center">TIC-TAC-TOE</h1>
-
+    
                     <div className="container">
                         <div className="row">
                             <div className="col-md-3">
-                                <div className="text-center my-3">
-                                    {msg}
-                                </div>
+                                <div className="text-center my-3">{msg}</div>
                                 <div className="row justify-content-center">
-
-                                    {this.renderBoard(this.state.frames[this.state.index].squares)}
+                                    {this.renderBoard(
+                                        this.state.frames[this.state.index].squares
+                                    )}
                                 </div>
-
-
-
+    
                                 <div className="pt-4 row text-center">
                                     <h3 className="text-center">
-                                        <input type="checkbox" name="toggle" id="toggle-ai" onChange={() => this.toggleAI()} />
-                                        <label for="toggle-ai" className="toggle-label">  Play against Computer</label>
+                                        <input
+                                            type="checkbox"
+                                            name="toggle"
+                                            id="toggle-ai"
+                                            onChange={() => this.toggleAI()}
+                                        />
+                                        <label
+                                            htmlFor="toggle-ai"
+                                            className="toggle-label"
+                                        >
+                                            Play Alone
+                                            
+                                        </label>
                                     </h3>
                                 </div>
-
-
+    
+                                {/* Difficulty level selector */}
+                              
                             </div>
                         </div>
                         <div className="col-md-3">
                             <div className="row text-center">
-
                                 <ul>
                                     <li key="-1">
                                         {this.renderResetButton()}
                                     </li>
                                     <li>
-                                    <button className="Rbutton2"  onClick={goToMenu}>  Main Menu </button>
+                                        <button
+                                            className="Rbutton2"
+                                            onClick={goToMenu}
+                                        >
+                                            Main Menu
+                                        </button>
                                     </li>
-                                  
+                                <li>
+                                {this.state.twoplayer === false && (
+                                    
+                                        <h2 className="text-center">
+                                          <h3> Difficulty Level:</h3>  {" "}   
+                                            <select
+                                                value={this.state.difficulty}
+                                                onChange={(event) =>
+                                                    this.setState({
+                                                        difficulty:
+                                                            event.target.value,
+                                                    })
+                                                }
+                                            >
+                                                <option value="easy">Easy</option>
+                                                <option value="medium">
+                                                    Medium
+                                                </option>
+                                                <option value="hard">Hard</option>
+                                            </select>
+                                    
+                                            </h2>
+                                )}
+                                </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-
-
         );
     }
+    
 }
+
 export default Game

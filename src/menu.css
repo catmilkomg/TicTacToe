@@ -12,13 +12,13 @@
 }
 @media (max-width: 768px) {
   .play {
-    font-size: 3rem;
+    font-size: 4rem;
     text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
 }}
 
 @media (max-width: 480px) {
   .play {
-    font-size: 2rem;
+    font-size: 3rem;
     text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
 }}
 h1 {
@@ -45,7 +45,7 @@ body {
   
   background-image: url('BACK.gif');
   background-size: cover;
-
+ background-repeat: no-repeat;
   font-family: 'Roboto', sans-serif;
   flex-basis: 100%;
   display: flex;
