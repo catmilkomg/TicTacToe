@@ -16,7 +16,7 @@ h1 {
   font-size: 5rem;
   text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de;
  
-  font-family: fantasy;
+
 }
 @media (max-width: 768px) {
   h1 {
@@ -36,7 +36,7 @@ body {
   background-image: url('BACK.gif');
   background-size: cover;
 
- 
+  font-family: 'Roboto', sans-serif;
   flex-basis: 100%;
   display: flex;
   justify-content: center;
