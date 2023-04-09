@@ -1,6 +1,6 @@
 .play {
   display: block;
-  font-family: fantasy;
+
   font-size: 6em;
   color: yellow;
   text-decoration: none;
@@ -10,7 +10,17 @@
   border: none;
   margin-left: 1rem;
 }
+@media (max-width: 768px) {
+  .play {
+    font-size: 3rem;
+    text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
+}}
 
+@media (max-width: 480px) {
+  .play {
+    font-size: 2rem;
+    text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
+}}
 h1 {
   text-align: center;
   font-size: 5rem;
