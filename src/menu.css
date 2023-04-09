@@ -1,14 +1,14 @@
 .play {
   display: block;
   font-family: fantasy;
-  font-size: 80px;
+  font-size: 6em;
   color: yellow;
   text-decoration: none;
 
   text-shadow: 0 0 10px #d7f847, 0 0 20px #000, 0 0 40px #d7f847;
   background: none;
   border: none;
-  margin-left: 15%;
+  margin-left: 1rem;
 }
 
 h1 {
@@ -18,12 +18,13 @@ h1 {
   /* Adds the neon effect to the text */
   font-family: fantasy;
 }
-
 body {
+  
   background-image: url('BACK.gif');
   background-size: cover;
-  background-repeat: no-repeat;
 
+ 
+  flex-basis: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
