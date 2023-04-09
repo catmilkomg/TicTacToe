@@ -105,21 +105,7 @@ class Game extends React.Component {
     );
   }
 
-  renderHistory() { 
-    console.log("History render!");
-    let filtered = this.state.frames.filter((_,i) => { console.log(i>0); return (i > 0) });
-    console.log(filtered);
-    return (filtered.map(
-      (board, i) => {
-        return (
-          <li key={i}>
-            <button onClick={() => { this.changeFrame(i) }}>
-              {"Jump to step " + (i+1) + " (" + (this.state.frames[i].move%3+1) + "," + Math.floor(this.state.frames[i].move/3+1) + ")"}
-            </button>
-          </li>
-        )
-      }));
-  }
+ 
 
   resetGame() { 
     this.setState({
@@ -337,7 +323,7 @@ class Game extends React.Component {
             <li key="-1">
               { this.renderResetButton() }
             </li>
-            { this.renderHistory() }
+          
           </ul>
         </div>
       </div>

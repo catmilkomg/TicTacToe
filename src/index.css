@@ -1,26 +1,23 @@
 body {
-  background: #f6d3f6;
+
+
   display: flex;
   justify-content: center;
   align-items: center;
- 
+
 }
-#toggle-ai {
-  display: inline-block;
-  vertical-align: middle;
-  width: 25px;
-  height: 25px;
-}
+
+
 .container {
   display: flex;
   flex-wrap: wrap;
 }
 
-.container > * {
+.container>* {
   flex: 1;
 }
 
-.container > .row:nth-child(2) {
+.container>.row:nth-child(2) {
   flex-basis: 100%;
   display: flex;
   justify-content: center;
@@ -28,7 +25,9 @@ body {
 }
 
 
-table, tr, td {
+table,
+tr,
+td {
   padding: 0;
   margin: 0;
   width: 100%;
@@ -46,9 +45,11 @@ table {
   padding: 0;
   width: 100px;
   height: 100px;
-  border: 1px solid #6203fc;
-  background-color: #f8fada;
+  border: none;
+  box-shadow: 0 0 10px black, 0 0 20px #ff00de;
+  background-color: #fff;
 }
+
 
 .square:active {
   background-color: #06d7f7;
@@ -56,30 +57,148 @@ table {
 
 .square.disabled {
   background-color: #ffffff;
+  cursor: default;
+  border-color: #f3e2ec;
 }
 
+.square.disabled:hover {
+  background-color: #ffffff;
+}
 
-
-.toggle-main {
+.square > svg {
   width: 100%;
-  height: 15px;
-  padding: 0;
-  margin: 0;
+  height: 100%;
+  color: black;
 }
 
-.toggle-padding {
-  background: red;
-  width: 15px;
-  height: 15px;
-  padding: 0;
-  margin: 0;
-}
+
+
+
+
+
 label {
   display: inline-block;
   vertical-align: middle;
   margin-right: 10px;
 }
+
 ul li.firstItem {
   background-color: green;
 }
+.game-tied-container {
+  background-color:  black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+}
+
+.game-tied-message {
+  font-size: 2rem;
+  text-align: center;
+  text-shadow: 2px 2px #ff00de;
+}
+
+.game-tied-message svg {
+  margin-left: 0.5rem;
+  color: yellow;
+  font-size: 2.5rem;
+}
+.toggle-label {
+  color: #fff;
+  display: inline-block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+  font-family: 'fantasy';
+}
+
+.toggle-label::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  border: 2px solid #555;
+  box-shadow: inset 0 0 10px #555;
+  transition: all 0.3s ease;
+}
+
+.toggle-label::after {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  left: 5px;
+  top: calc(50% + 1px);
+  transform: translateY(-50%);
+  background-color: #555;
+  transition: all 0.3s ease;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"]:checked + .toggle-label::before {
+  background-color: #0c0;
+  border-color: #0c0;
+  box-shadow: inset 0 0 10px #0c0;
+}
+
+input[type="checkbox"]:checked + .toggle-label::after {
+  left: calc(100% - 14px);
+  background-color: #0c0;
+}
+.Rbutton {
+  border: 2px solid #0c0;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: #f8fada;
+  color: rgb(3, 95, 3);
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+}
+
+.Rbutton:hover {
+  background-color: #0c0;
+  border: 2px solid #0c0;
+  color: #f8fada;
+}
+.Rbutton2{
+  border: 2px solid #6203fc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: #f8fada;
+  color: #6203fc;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.Rbutton2:hover {
+  background-color: #6203fc;
+  color: #f8fada;
+}
+
+
+
+
+
+
+
 

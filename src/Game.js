@@ -1,11 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy  } from '@fortawesome/free-solid-svg-icons';
+
 import ResetButton from './ResetButton';
 import Board from './Board';
-
+import ReactDOM from "react-dom";
 import './index.css';
-import { faSmile } from '@fortawesome/free-regular-svg-icons';
+import { faSmile, faFaceGrinBeam } from '@fortawesome/free-regular-svg-icons';
+import Menu from './Menu';
 
 
 
@@ -13,25 +14,23 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            difficulty:"easy",
+           
             frames: [
                 {
-                    squares: Array(9).fill(null), 
-                    changed: -1, 
+                    squares: Array(9).fill(null),
+                    changed: -1,
                 }
             ],
             index: 0,
-            size: 3, 
+            size: 3,
             current: "X",
             running: true,
-            twoplayer: true 
+            twoplayer: true
         }
     }
-    handleDifficultyChange = (event) => {
-        this.setState({ difficulty: event.target.value });
-      }
+   
 
-    renderResetButton() { 
+    renderResetButton() {
         return <ResetButton onClick={() => { this.resetGame(this.state.size) }} />;
     }
 
@@ -42,43 +41,27 @@ class Game extends React.Component {
         );
     }
 
-    renderHistory() { //Render the history board frames into a list of buttons
-        let filtered = this.state.frames.slice().filter((_, i) => i > 1); //
-        return (filtered.map(
-            (board, i) => {
-                i = i + 1;
-                return (
-                    <li key={i}>
-                        <button onClick={() => { this.changeFrame(i) }}>
-                            {
-                                "Jump to move " + (i) + " (" + (this.state.frames[i].move % 3 + 1) +
-                                "," + Math.floor(this.state.frames[i].move / 3 + 1) + ")"
-                            }
-                        </button>
-                    </li>
-                )
-            }));
-    }
+   
 
-    toggleAI() { 
+    toggleAI() {
         if (this.state.twoplayer) {
-            if (this.state.current === "O") { 
+            if (this.state.current === "O") {
                 this.aiMove();
             }
         }
         this.setState({ twoplayer: !this.state.twoplayer });
     }
 
-    resetGame(size) { 
+    resetGame(size) {
         this.setState({
             frames: [
                 { squares: Array(size * size).fill(null) }
             ],
             current: "X",
-            index: 0, 
+            index: 0,
             size: size,
             running: true, //Allows moves
-            game_won: false 
+            game_won: false
         });
     }
 
@@ -94,14 +77,14 @@ class Game extends React.Component {
 
 
     getMove() {
-        let board = this.state.frames[this.state.index].squares.slice(); 
+        let board = this.state.frames[this.state.index].squares.slice();
         let slots = this.getAvailableSquares(this.state.frames[this.state.index].squares);
-        let choice = -1; 
+        let choice = -1;
         let best = -1000; //Arbitrary value for best move
-        for (let move of slots) { 
+        for (let move of slots) {
             board[move] = "O";
             let v = this.minimax(board, true, -1000, 1000);
-            if (v > best) { 
+            if (v > best) {
                 best = v;
                 choice = move;
             }
@@ -112,23 +95,23 @@ class Game extends React.Component {
 
     minimax(board, turn, alpha, beta) {
         let score = this.gameOverCheck(board, false); //Get the score
-        if ((!this.isFull(board)) && (score === null)) { 
+        if ((!this.isFull(board)) && (score === null)) {
             let best = (turn ? 1000 : -1000);
             let a = alpha;
             let b = beta;
             let slots = this.getAvailableSquares(board);
-            for (let move of slots) { 
+            for (let move of slots) {
                 board[move] = turn ? "X" : "O";
                 let r = this.minimax(board, !turn, a, b);
                 board[move] = null;
-                if (turn) { 
+                if (turn) {
                     best = Math.min(best, r);
                     b = Math.min(b, best);
                     if (b <= a) {
                         board[move] = null;
                         break;
                     }
-                } else { 
+                } else {
                     best = Math.max(best, r);
                     a = Math.max(a, best);
                     if (b <= a) {
@@ -164,11 +147,11 @@ class Game extends React.Component {
         return this.getAvailableSquares(board).length === 0;
     }
 
-    clickHandler(i) { 
-        if (this.state.frames[this.state.index].squares[i] == null) {  
+    clickHandler(i) {
+        if (this.state.frames[this.state.index].squares[i] == null) {
             if (this.state.twoplayer) { //Two player mode
                 this.setSquare(i);
-                this.setState({ current: (this.state.current === "X") ? "O" : "X" }); 
+                this.setState({ current: (this.state.current === "X") ? "O" : "X" });
             } else { //computer mode
                 this.setSquare(i);
                 this.aiMove();
@@ -176,9 +159,9 @@ class Game extends React.Component {
         }
     }
 
-    async setSquare(i) { 
+    async setSquare(i) {
         if (this.state.running !== false) {
-            const boards = this.state.frames.slice(0, this.state.index + 1); 
+            const boards = this.state.frames.slice(0, this.state.index + 1);
             const squares = boards[this.state.index].squares.slice();
             if (squares[i] == null) { //Prevent altering already set squares
                 squares[i] = this.state.current;
@@ -191,9 +174,9 @@ class Game extends React.Component {
     }
 
     aiMove() {
-        if (this.state.running) { 
+        if (this.state.running) {
             this.setState({ current: "O", running: undefined });
-            window.setTimeout(() => { 
+            window.setTimeout(() => {
                 if (this.state.running !== false) {
                     let move = this.getMove();
                     this.setSquare(move);
@@ -205,7 +188,7 @@ class Game extends React.Component {
         }
     }
 
-    gameOverCheck(board, actual) { 
+    gameOverCheck(board, actual) {
         let sq = board;
 
         for (let i = 0; i < this.state.size * this.state.size - 1; i += this.state.size) { //Horizontal - rows
@@ -308,70 +291,80 @@ class Game extends React.Component {
             return null;
         }
     }
+    
 
-    render() { 
+    render() {
+        function goToMenu() {
+            const gameComponent = <Menu />;
+            ReactDOM.render(gameComponent, document.getElementById("root"));
+          }
         let msg = "";
         if (this.state.running === false && this.state.game_won === true) {
             if (this.state.current !== "") {
-                msg = <h2><FontAwesomeIcon icon={faTrophy } /> Winner is : {this.state.current} <FontAwesomeIcon icon={faTrophy } /> </h2>;
+                msg = <div className="game-tied-container">
+                    <h2 className="game-tied-message">
+
+                        Winner is: {this.state.current}
+                        <FontAwesomeIcon icon={faFaceGrinBeam} />
+                    </h2>
+                </div>;
             } else {
-                msg = <h2>Game tied! <FontAwesomeIcon icon={faSmile } /></h2>;
+                msg = <div className="game-tied-container">
+                    <h2 className="game-tied-message">Game tied! <FontAwesomeIcon icon={faSmile} /></h2>
+                </div>;
             }
         } else {
-            msg = <h4>Next player: {this.state.current}</h4>;
+            msg = <div className="game-tied-container">
+                <h2 className="game-tied-message">Next player: {this.state.current}</h2>
+            </div>;
         }
 
         return (
             <div className="row mt-5">
                 <div className="col-md-9">
-                    <h1 className="text-center">Jeu de morpion</h1>
+                    <h1 className="text-center">TIC-TAC-TOE</h1>
 
                     <div className="container">
                         <div className="row">
-                        <div className="col-md-3">
-                            <div className="text-center my-3">
-                                {msg}
-                            </div>
-                            <div className="row justify-content-center">
+                            <div className="col-md-3">
+                                <div className="text-center my-3">
+                                    {msg}
+                                </div>
+                                <div className="row justify-content-center">
 
-                                {this.renderBoard(this.state.frames[this.state.index].squares)}
-                            </div>
+                                    {this.renderBoard(this.state.frames[this.state.index].squares)}
+                                </div>
 
 
-                            
+
                                 <div className="pt-4 row text-center">
                                     <h3 className="text-center">
                                         <input type="checkbox" name="toggle" id="toggle-ai" onChange={() => this.toggleAI()} />
-                                        <label for="toggle-ai">  Play against Computer   </label>
+                                        <label for="toggle-ai" className="toggle-label">  Play against Computer</label>
                                     </h3>
                                 </div>
-                                <div>
-          <label htmlFor="difficulty">Difficulty:</label>
-          <select id="difficulty" value={this.state.difficulty} onChange={this.handleDifficultyChange}>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
+
+
                             </div>
                         </div>
                         <div className="col-md-3">
                             <div className="row text-center">
-                               
+
                                 <ul>
                                     <li key="-1">
                                         {this.renderResetButton()}
-                                        </li>
-                                        <h3 className="text-center">History</h3>
+                                    </li>
+                                    <li>
+                                    <button className="Rbutton2"  onClick={goToMenu}>  Main Menu </button>
+                                    </li>
                                   
-                                    {this.renderHistory()}
                                 </ul>
-                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
-           
+            </div>
+
 
 
 

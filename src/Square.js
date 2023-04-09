@@ -8,10 +8,11 @@ class Square extends React.Component {
     }
     return (
       <div className={className} onClick={() => { this.props.onClick(); }} >
-        { this.props.value }
+        {this.props.value}
       </div>
     );
   }
 }
 
 export default Square;
+
